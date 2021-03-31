@@ -15,8 +15,22 @@
         - charles
             - rewrite：简单mock
             - map local：复杂mock
-            - map remote：整体测试环境
-    - 自动化测试：mitmproxy
+            - map remote：切换测试环境
+    - 自动化测试：mitmproxy [地址](https://docs.mitmproxy.org/dev/overview-installation/)
+        - pip install pipx
+        - pipx install mitmproxy
+        - 运行: 默认监听 8080 `mitmdmp`，修改为 8090 `mitmdump -p 8090`
+        - 工具组成
+            - mitmproxy 交互的UI工具
+            - mitmdump 核心工具
+            - mitmweb UI界面工具，类型 Chrome
+        - 证书下载: [地址](http://mitm.it)
+        - 基本使用
+            - 保存录制好的二进制文件 mitmdump -p 8070 -w .\Desktop\tmp
+            - 不开启录制并打开文件进行回放 mitmdump -p 8070 -nC .\Desktop\tmp
+            - 打开本地文件过滤请求 mitmdump -p 8070 -nr .\Desktop\tmp -w .\Desktop\tmp2 "~s douban"
+            - `mitmweb` 分析录制到的内容
+            - 运行脚本实现录制 mitmdump -p 8070 -s maplocal.py
     - 其他代理：fiddler（仅Windows）、AnProxy（全平台）
     - 高性能代理服务器：squid、dante
     - 反响代理：nginx
@@ -37,6 +51,7 @@
             - -o 写文件
             - -x 代理 http代理 socks5代理
             - -v verbose 打印更详细日志 -s 关闭一些提示输出
+            - -k 不进行证书认证
 
 ```shell script
 url=http://www.baidu.com
@@ -118,7 +133,16 @@ curl -s --user $mail_username:$mail_password "imaps://imap.exmail.qq.com/inbox?a
     - 需要用 token 识别用户
     - 需要用把 sessionId 保存到 http 请求中的 header 或者 query 字段中
 
+### socks、socket、websocket
 
+- TCP/IP 四层模型：应用层 -> 传输层 -> 网络层 -> 网络接口层
+- TCP/IP 五层模型：应用层 -> 传输层 -> 网络层 -> (数据链路层 -> 物理层)
+- OSI 七层模型：(应用层 -> 表示层 -> 会话层) -> 传输层 -> 网络层 -> (数据链路层 -> 物理层)
+
+- socks：在TCP/IP五层模型中和http处于应用层同一层，但是在OSI七层默认中会话层，http在应用层
+    - chrome -> http -> socks library -> tcp
+- socket：应用层 -> socket抽象层 -> 运输层 -> 网络层 => 链路层，实现了五层协议
+- websocket：应用层中的协议
 
 
 
