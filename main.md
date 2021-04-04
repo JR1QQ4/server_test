@@ -301,4 +301,47 @@ curl -s --user $mail_username:$mail_password "imaps://imap.exmail.qq.com/inbox?a
         - application 用于确保哪个主机 host106
         - measurement 要与 grafana 设置面板时的 Measurement name 一致
 
-####
+#### 压测脚本
+
+```shell script
+#!/usr/bin/env bash
+
+# 压测脚本模板中设定的压测时间为60秒，jmx_template_filename 创建的模板文件
+export jmx_template="emenu"
+export suffix=".jmx"
+export jmx_template_filename="${jmx_template}${suffix}"
+export os_type=`uname`
+
+# 需要在系统变量中定义 jmeter 根目录的位置，如下
+# export jmeter_path="/your jmeter paht/"
+
+exho "自动化压测全部开始"
+# 压测并发列表
+thread_number_array=(10 20 30 40 50 60 70)
+for num in "${thread_number_array[@]}"
+do
+  # 生成对应压测线程的 jmx 文件
+  export jmx_filename="${jmx_template}_${num}${suffix}"
+  export jtl_filename="test_${num}.jtl"
+  export web_report_path_name="web_${num}"
+
+  rm -f ${jmx_filename} ${jtl_filename}
+  rm -rf ${web_report_path_name}
+
+  cp ${jmx_template_filename} ${jmx_filename}
+  echo "生成 jmx 压测脚本 ${jmx_filename}"
+  
+  # thrad_num 是模板文件中表示并发数的变量，即 Number od Threads(users)
+  if [[ "${os_type}" == "Darwin" ]]]; then
+    sed -i "" "s/thrad_num/${num}/g" ${jmx_filename}
+  else
+    sed -i "s/thread_num/${num}/g" ${jmx_filename}
+
+  # JMeter 静默压测
+  ${jmeter_path}/bin/jmeter -n -t ${jmx_filename} -l ${jtl_filename}
+  
+  # 生成 web 压测报告
+  ${jmeter_path}/bin/jmeter -g ${jmx_filename} -e -o ${web_report_path_name}
+done
+echo "自动化压测全部结束"
+```
