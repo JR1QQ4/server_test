@@ -144,10 +144,161 @@ curl -s --user $mail_username:$mail_password "imaps://imap.exmail.qq.com/inbox?a
 - socket：应用层 -> socket抽象层 -> 运输层 -> 网络层 => 链路层，实现了五层协议
 - websocket：应用层中的协议
 
+## 性能测试
 
+### 前言
 
+- 性能测试：模拟多个用户的操作对服务器硬件性能的影响
+    - TPS（Transaction per Second）每秒事务处理能力
+    - RT（Response Time）响应时间
+- 工具：
+    - Apache ab：Apache HTTP 服务器性能基准工具
+    - Apache JMeter：支持多种协议，Java 语言开发
+    - LoadRunner：支持很多协议，C 语言开发
+    - Locust：有 Web 界面，支持多种协议，Python 开发
+        - 安装：pip install locustio
+        - 运行：locust
+    - nGrinder：Naver 公司基于 Grinder 开发的性能测试平台，能运行 jython、groovy 编写的测试脚本，使用 Java 开发
+        - 运行：java ngrinder-controller.war
+        - 默认账号密码：admin
 
+### 基本功能
 
+- 创建 JMeter 脚本
+    - 方式一：录制新建
+    - 方式二：手动创建
+- 接口压力测试请求的创建：POST、GET、DELETE...
+    - HTTP Header Manager 设置请求头信息，比如 token
+- 压力测试请求中的数据传递
+    - JSON 提取器
+    - XPATH 提取器
+- 压力测试中的结果断言校验
+    - Response Assertion
+    - JSON Assertion
+- 利用 Beanshell 生成测试数据
+    - Beanshell script 逻辑生成数据
+    - Java 代码逻辑生成数据
+- 全局变量与 CSV 数据导入
+    - User Defined Variables
+    - CSV Data Set
+- 压测结果数据解读
+    - 聚合报告
+    - 请求/响应结果树
+    - Debug Sampler
+- 采样器
+    - Debug Sampler，运行时开启
+- 定时器
+    - Constant Timer，思考时间
+- HTTP Request
+    - JSON Extractor
+        - Names of created variables：access_token，定义全局变量
+        - JSON Path expressions：$.access_token，需要匹配的 JSON 中的字段
+        - Match No. (0 for Random)： 0，匹配的初始位置
+    - JSON Assertion
+        - Additionally assert value，是否额外验证根据 JSONPath 提取的值
+        - Assert JSON Path exists：$.message，返 回用于断言的字段
+        - Expected Value：login success，期望结果 
+- 静默压测
+    - jmeter -n -t $jmx_file -l $jtl_file，jmx JMeter压测程序脚本文件，jtl JMeter压测请求响应数据的原始文件
+    - 自动生成 web 版压测报告
+        - jmeter -g $jtl_file -o $web_report_folder
+        - jmeter -n -t $jmx_file -l $jtl_file -o $web_report_folder
 
+### 使用
 
+- 线程组：TestPlan->Thread Group
+- 监听器 Recording Controller：TestPlan->Thread Group->Add->Logic Controller->Recording Controller
+- 查看结果树：TestPlan->Thread Group->Add->Listener->View Results Tree
+- 录制：TestPlan->Add->No-Test Elements->HTTP(S) Test Script Recorder
 
+#### 模拟用户
+
+- 请求：TestPlan->Thread Group->Sampler->HTTP Request
+- 采样器：TestPlan->Thread Group->Add
+- 查看结果树：TestPlan->Thread Group->Add->Listener->View Results Tree
+- 测试：
+    - 运行服务：python -m http.server 80，监听80端口
+    - HTTP Request 中 IP 填写为本机 IP
+
+- Listener View Results Tree
+- Listener Aggregate Report（聚合报告）
+    - 命令行运行：./jmeter.sh -n -t test_http.jmx test_http.jtl，n不开启图形界面，t指定测试计划，l运行结果
+- Backend Listener
+
+#### 分布式压测
+
+- 工作节点（Slave）部署
+    - 负载机（Slaves），开启端口 tcp 1099
+        - jmeter.properties：
+            - 关闭 SSL：server.rmi.ssl.disable=true
+        - system.properties：
+            - 添加主机：java.rmi.server.hostname=192.168.0.106
+    - 运行：jmeter-server
+- 控制节点（Master）部署
+    - 控制端（Master），开启端口 udp 4445
+        - jmeter.properties
+            - 添加负载机 IP：remote_hosts=192.168.0.106,192.168.0.107
+            - 关闭 SSL：server.rmi.ssl.disable=true
+    - 运行：jmeter -> run
+- 命令运行远程主机：./jmeter.sh -n -t test_http.jmx test_http.jtl -R 192.168.0.106,192.168.0.107
+
+#### 监控系统
+
+- InfluxDB，开源时序数据库
+  - 部署：
+    1. Docker 部署 -> docker pull influxdb ( 下载InfluxDB镜像 )
+    2. 启动 InfluxDB 容器 -> docker run -d -p 8086:8086  -p 8083:8083 --name=jmeterdb influxdb ( 将容器命名为jmeter_influxdb ) -> docker exec -it jmeterdb bash ( 进入容器内部 )
+    3. 在容器内部创建 jmeter 数据库 -> 执行 Influx 命令进入命令台 -> create database jmeter; ( 创建 jmeter 数据库 ) -> show databases; ( 验证结果 )
+- JMeter，压测工具
+  - 添加 Backend Listener 组件，用于收集数据并发送给 influxdb
+    - 在 Backend Listener Implementation 中选择 InfluxdbBackendListenerClient ( jmeter 5.0以上 ) -> 在 InfluxURL 中将实际 Influxdb hostname 填进去 ( http://localhost:8086/write?db=jmeter ) -> 在 application 中填写 order -> 在 testTitle 中填写 Order Testing -> 其余配置保持不变
+  - 运行 JMeter，然后在 Influxdb 中校验是否已经能够接受到数据 -> 在 Influxdb 命令中使用查询语句，检查是否已经能够收到数据 ( select * from jmeter; )
+- Grafana，度量分析与可视化图标展示工具
+  - Dcoker 部署：
+    - 下载镜像 ( docker pull grafana/grafana ) -> 启动镜像 ( docker run -d -p 3000:3000 --name=jmeterGraf grafana/grafana )
+    - 访问 Grafana 的控制台链接 ( http://localhost:3000/login ) -> 默认用户名/密码：admin/admin
+    - 在 Grafana 中添加数据源 -> 选择 Add data source -> 找到 InluxDB 并选择
+    - 配置influxDB 数据源 (URL 为 http://localhost:8086，Access 为 browser，Database 为 jmeter)
+    - 单击 Sava & Test
+    - 在 Grafana 内导入 JMeter Dashboard -> 进入 Home Dashboard 页面选择 Import
+    - 打开 iJmeter 项目中的 shell/ jmeter_dashboard.json 文件 -> 将 json 文件粘贴到 paste JSON 中 -> 在 DB name 中选择 InfluxDB -> 单击 Import 按钮完成 Dashboard 导入 -> 单击 Load 导入 
+      - ps：模板可以从官网下载
+    - 打开刚刚导入的 JMeter Dashboard 查看结果
+
+- influxDB 数据库
+    - docker 部署
+        - 创建容器网络：docker network create grafana
+        - 运行容器：docker run -d --name=influxdb --network grafana -p 8086:8086 -v ${PWD}/influxdb/:/var/lib/influxdb/ inluxdb:1.7.10
+            - d 后台运行，name 类似域名，network 指定容器网络，p 指定端口映射，inluxdb:1.7.10 镜像版本信息
+            - v 把容器内/var/lib/influxdb/挂在到${PWD}/influxdb/当前目录下的influxdb文件下
+        - 创建数据库
+            - 方式一：curl -i -XPOST http://localhost:8086/query --data-urlencode "q=CREATE DATABASE jmeter"
+            - 方式二：登录influxdb容器 docker exec -it influxdb influx，执行语句 create database jmeter;
+        - 简单使用
+            - show databases;
+            - use jmeter;
+            - show measurements;  # 显示数据表，类似 show tables
+            - select * from jmeter limit 3;
+
+- Grafana
+    - 运行容器：docker run -d --name grafana --network grafana -p 3000:3000 grafana/grafana:6.6.2
+    - 默认登录账号：admin，密码：admin
+    - 配置数据源：
+        - Add data source
+            - InfluxDB
+                - URL：http://influxdb:8086
+                    - 如果没有配置 influxdb name，需要进入到容器查看 IP
+                        - docker exec -it influxdb sh
+                        - cat /etc/hosts -> 例如 172.18.0.2
+                        - 此时 URL：http://172.18.0.2:8086
+                - Database：jmeter
+                - Min time interval：5s，grafana 读取 influxdb 默认 10s
+
+- JMeter
+    - 后端监听器：TestPlan->Thread Group->Add->Listener->Backend Listener
+        - 选择 influxdb
+        - 修改 influxdbUrl，ip 地址为服务器地址 http://192.168.0.106:8086/write?db=jmeter
+        - application 用于确保哪个主机 host106
+        - measurement 要与 grafana 设置面板时的 Measurement name 一致
+
+####
