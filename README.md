@@ -61,14 +61,27 @@ Docker，起源于 2013，开源的应用容器引擎，基于 Go
 		- 容器网络
 			- 创建容器网络：docker network create testlink，创建名称为 testlink 的容器网络
 			- 查看创建的所有容器网络：docker network ls
-	- registry，[地址](https://hub.docker.com/_/registry)
-		- Docker registry 是存储 Docker image 的仓库，运行 push、pull、search 时，通过 Docker daemon 与 Docker registry 通信
-			- 有时候使用 Docker Hub 这样的公共仓库可能不方便，就可以通过 registry 创建一个本地仓库
-		- 运行：`docker run -d -p 5000:5000 -v ${PWD}/registry:/var/lib/registry --restart always --name registry registry:2`
-			- 配置本地仓库 daemon.json：`{"registry-mirrors": ["192.168.0.128:5000"]}`
-			- 打标签：docker tag nginx:1.17.9 192.168.0.128:5000/nginx:1.17.9
-			- 上传：docker push 192.168.0.128:5000/nginx:1.17.9
-			- 下载：docker pull 192.168.0.128:5000/nginx:1.17.9
+
+### registry
+
+- registry，[地址](https://hub.docker.com/_/registry)
+	- Docker registry 是存储 Docker image 的仓库，运行 push、pull、search 时，通过 Docker daemon 与 Docker registry 通信
+		- 有时候使用 Docker Hub 这样的公共仓库可能不方便，就可以通过 registry 创建一个本地仓库
+	- 运行：`docker run -d -p 5000:5000 -v ${PWD}/registry:/var/lib/registry --restart always --name registry registry:2`
+		- 配置本地仓库 daemon.json：`{"registry-mirrors": ["192.168.0.128:5000"]}`
+		- 打标签：docker tag nginx:1.17.9 192.168.0.128:5000/nginx:1.17.9
+		- 上传：docker push 192.168.0.128:5000/nginx:1.17.9
+		- 下载：docker pull 192.168.0.128:5000/nginx:1.17.9
+	- 步骤：
+		- docker pull registry:2
+		- docker run -d -p 5000:5000 -v /usr/local/registry:/var/lib/registry --restart always --name registry registry:2
+		- docker pull busybox
+		- docker tag busybox localhost:5000/busybox:v1.0，localhost:5000表示镜像仓库的地址
+			- 如果镜像打包的时候就按照`仓库地址/镜像名:版本号`的方式命名，就不需要重新打标记
+				- 如 docker build -t localhost:5000/busybox:v1.0
+		- docker push localhost:5000/busybox:v1.0
+		- curl http://localhost:5000/v2/_catalog，查看仓库里的镜像
+		
 
 ### 搭建 Web 服务器
 
@@ -179,6 +192,29 @@ Docker-compose
 	
 	
 	
+
+## 持续集成
+
+- 持续集成：频繁地（一天多次）将代码集成到主干
+- CI（持续集成 Continuous Integration）：Develop->Build->Test
+- CD（持续交付 Continuous Delivery）：Develop->Build->Test->Release
+- CD（持续部署 Continuous Deployment）：Develop->Build->Test->Release->Deploy to production
+
+### Jenkins
+
+- docker部署
+    - 1.拉取docker：docker pull jenkins/jenkins:lts
+    - 2.创建docker地文件影射卷：docker volume inspect jenkins_home
+    - 3.创建实例：docker run -d --name jenkins -p 8080:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home
+        - -e JAVA_OPTS=-Duser:timezone=Asia/Shanghai jenkins/jenkins:lts
+    - 4.获取初始管理员密码：docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+- slave 节点连接方式
+    - 8080端口用于jenkins服务器的对外UI地址，50000端口用于slave节点与jenkins的通讯端口
+    - wget http://docker.test-studio.com:8080/jnlpJars/agent.jar
+    - java -jar agent.jar -jnlpUrl http://docker.test-studio.com:8080/computer/demo/slave-agent.jnlp
+        - -secret e74f690d1bcd42749110c0087645b606ef0f7395 -workDir "/tmp/jenkins/"
+- 无界面运行
+    - `using_headless=os.environ["using_headless"]`
 
 
 
