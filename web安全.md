@@ -52,6 +52,20 @@
     - 命令执行
     - 威胁情报
 
+绕过查杀规则：
+- 常见查杀规则：静态文本查杀、动态执行查杀
+- 1.文本查杀绕过：大小写转换、文本颠倒、文本分割、干扰函数、加密、语言特征
+- 2.动态执行查杀逃过：加密传输、改变传输特征...
+- 方式：WebShell原理 + ByPass安全狗 + Cknife
+
+NTFS文件流：
+- 1.打开cmd，`$ echo matlab>>abc.txt:test.txt`，会生成一个 abc.txt 的文件，但文件的大小为 0 字节，点击打开后无任何内容
+- 2.进入cmd，`$ notepad abc.txt:test.txt` 打开可以查看编辑里面的内容
+    - 这里的 `abc.txt` 可以不存在，也可以是某个已存在的文件，文件格式无所谓，无论是.txt还是.jpg|.exe|.asp都行
+    - 这里的 `test.txt` 代表一个文件流
+- 3.包含隐藏信息的文件任然可以继续隐藏其他的内容
+    - `echo matlab>>abc.txt:test.txt` 会给 abc.txt 建立一个隐藏信息的流文件，cmd 中使用 notepad 可查看
+    - `echo matlab1>>abc.txt:test1.txt` 会给 abc.txt 建立新的隐藏信息的流文件，notepad 打开显示 matlab1
 
 
 
