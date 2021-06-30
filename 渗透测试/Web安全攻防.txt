@@ -1,0 +1,15 @@
+1、渗透测试之信息收集
+- 在信息收集中，最主要的就是收集服务器的配置信息和网站的敏感信息，其中包括域名及子域名信息、目标网站系统、CMS指纹、目标网站真实IP、开放的端口等
+- 1）收集域名信息
+    - 第一步，获取域名的注册信息，包括DNS服务器信息和注册人的联系信息等，常用方法如下：
+        - ①Whois查询
+            - 在Kali系统中，可以使用命令`whois www.baidu.com`
+            - 在线常用网站有爱站工具网（https://www.aizhan.com/）、站长之家（http://whois.chinaz.com/）、VirusTotal(https://www.virustotal.com/)
+        - ②备案信息查询
+            - ICP备案查询网：https://beian.miit.gov.cn/#/Integrated/recordQuery
+            - 站长工具：http://icp.chinaz.com/
+            - 天眼查：https://www.tianyancha.com/
+- 2）收集敏感信息
+
+
+
