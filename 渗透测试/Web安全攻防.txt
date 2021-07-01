@@ -1,15 +1,90 @@
 1、渗透测试之信息收集
 - 在信息收集中，最主要的就是收集服务器的配置信息和网站的敏感信息，其中包括域名及子域名信息、目标网站系统、CMS指纹、目标网站真实IP、开放的端口等
-- 1）收集域名信息
-    - 第一步，获取域名的注册信息，包括DNS服务器信息和注册人的联系信息等，常用方法如下：
-        - ①Whois查询
-            - 在Kali系统中，可以使用命令`whois www.baidu.com`
-            - 在线常用网站有爱站工具网（https://www.aizhan.com/）、站长之家（http://whois.chinaz.com/）、VirusTotal(https://www.virustotal.com/)
-        - ②备案信息查询
-            - ICP备案查询网：https://beian.miit.gov.cn/#/Integrated/recordQuery
-            - 站长工具：http://icp.chinaz.com/
-            - 天眼查：https://www.tianyancha.com/
-- 2）收集敏感信息
+- 收集信息
+    - 收集域名信息
+        - 第一步，获取域名的注册信息，包括DNS服务器信息和注册人的联系信息等，常用方法如下：
+            - ①Whois查询
+                - 在Kali系统中，可以使用命令`whois www.baidu.com`
+                - 在线常用网站有爱站工具网（https://www.aizhan.com/）、站长之家（http://whois.chinaz.com/）、VirusTotal(https://www.virustotal.com/)
+            - ②备案信息查询
+                - ICP备案查询网：https://beian.miit.gov.cn/#/Integrated/recordQuery
+                - 站长工具：http://icp.chinaz.com/
+                - 天眼查：https://www.tianyancha.com/
+    - 收集敏感信息
+        - Google搜索常用语法，可以多个一起使用
+            - Site —— 制定域名
+            - Inurl —— URL中存在关键字的网页
+            - Intext —— 网页正文中的关键字
+            - Filetype —— 制定文件类型
+            - Intitle —— 网页标题中的关键字
+            - link —— link:baidu.com即表示返回所有和baidu.com做了链接的URL
+            - Info —— 查找指定站点的一些基本信息
+            - cache —— 搜索Google你关于某些内容的缓存
+    - 收集子域名信息
+        - 1）子域名检测工具：Layer子域名挖掘机、K8、wydomain、Sublist3r、dnsmaper、subDomainsBrute、Maltego CE等
+        - 2）搜索引擎枚举：site:baidu.com
+        - 3）第三方聚合应用枚举：使用DNSdumpster、在线DNS侦查和搜索的工具挖掘出指定域潜藏的大量子域
+        - 4）证书透明度公开日志枚举：https://crt.sh 和 https://censys.io
+    - 收集常用端口信息
+        - 扫描工具：Nmap、Masscan、ZMap和御剑高速TCP端口扫描工具
+        - 常见端口
+            - 文件共享服务端口
+                - 21/22/69 —— Ftp/Tftp文件传输协议，攻击方向——允许匿名的上传、下载、爆破和嗅探操作
+                - 2049 —— Nfs服务，攻击方向——配置不当
+                - 139 —— Samba服务，攻击方向——爆破、未授权访问、远程代码执行
+                - 389 —— Ldap目录访问协议，攻击方向——注入、允许匿名访问、弱口令
+            - 远程连接服务端口
+                - 22 —— SSH远程连接，攻击方向——爆破、SSH隧道及内网代理转发、文件传输
+                - 23 —— Telnet远程连接，攻击方向——爆破、嗅探、弱口令
+                - 3389 —— Rdp远程桌面连接，攻击方向——Shift后门（需要Windows Server2003以下的系统）、爆破
+                - 5900 —— VNC，攻击方向——弱口令爆破
+                - 5632 —— PyAnywhere服务，攻击方向——抓密码、代码执行
+            - Web应用服务端口
+                - 80/443/8080 —— 常见的Web服务端口，攻击方向——Web攻击、爆破、对应服务器版本漏洞
+                - 7001/7002 —— WebLogic控制台，攻击方向——Java反序列化、弱口令
+                - 8080/8089 —— Jboss/Resin/Jetty/Jenkins，攻击反序——反序列化、控制台弱口令
+                - 9090 —— WebSphere控制台，攻击方向——Java反序列化、弱口令
+                - 4848 —— GlassFish控制台，攻击方向——弱口令
+                - 1352 —— Lotus domino邮件服务，攻击方向——弱口令、信息泄露、爆破
+                - 10000 —— Webmin-Web控制面板，攻击方向——弱口令
+            - 数据库服务端口
+                - 3306 —— MySQL，攻击方向——注入、提权、爆破
+                - 1433 —— MSSQL，攻击方向——注入、提权、SA弱口令、爆破
+                - 1521 —— Oracle，攻击方向——TNS爆破、注入、反弹Shell
+                - 5432 —— PostgreSQL，攻击方向——爆破、注入、弱口令
+                - 27017/27018 —— MongoDB，攻击方向——爆破、未授权访问
+                - 6379 —— Redis，攻击方向——可尝试未授权访问、弱口令爆破
+                - 50000 —— SysBase/DB2，攻击方向——爆破、注入
+            - 邮件服务端口
+                - 25 —— SMTP邮件服务，攻击方向——邮件伪造
+                - 110 —— POP3协议，攻击方向——爆破、嗅探
+                - 143 —— IMAP协议，攻击方向——爆破
+            - 网络常见协议端口
+                - 53 ——　DNS —— 允许区域传送、DNS劫持、缓存投毒、欺骗
+                - 67/68 —— DHCP —— 劫持、欺骗
+                - 161 —— SNMP —— 爆破、收集目标内网信息
+            - 特殊服务端口
+                - 2181 —— Zookeeper —— 未授权访问
+                - 8069 —— Zabbix —— 远程执行、SQL注入
+                - 9200/9300 —— Elasticsearch —— 远程执行
+                - 11211 —— Memcache ——　未授权访问
+                - 512/513/514 —— Linux Rexec —— 匿名访问、文件上传
+                - 3690 —— Svn —— Svn泄露、未授权访问
+                - 50000 —— SAP Management Console —— 远程执行
+    - 指纹识别
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
