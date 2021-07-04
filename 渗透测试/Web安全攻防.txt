@@ -108,9 +108,30 @@
 	- 社工库
 
 2、搭建漏洞环境及实战
-
-
-
+- 环境搭建
+    - Linux：LANMP（Linux+Apache+Nginx+MySQL+PHP）
+    - Windows：xampp（Apache+MySQL+PHP+PERL） 或 WAMP（Apache+MySQL+PHP）
+    - 安装DVWA，一款开源的渗透测试漏洞练习平台，其中包含XSS、SQL注入、文件上传、文件包含、CSRF和暴力破解等各个难度的测试环境
+        - 在http://127.0.0.1/phpMyAdmin/中创建名为“dvwa”的数据库
+        - 修改config文件下的config.inc.php中数据库的用户名、密码、数据库名
+        - 修改完后，把dvwa文件放到www目录下，打开http://127.0.0.1/setup.php
+        - 在安装过程中可能出现红色的Disabled，修改PHP安装目录中的php.ini文件，修改对应的属性Off/On
+    - 安装sqli-labc，一款学习SQL注入的开源平台，共有75中不同类型的注入
+        - 在http://127.0.0.1/phpMyAdmin/中创建名为“security”的数据库
+        - 打开sql-connections文件夹中的db-creds.inc文件，可以修改数据库的账号、密码、库名等配置信息
+        - 在www目录中创建了sql1文件夹，并把代码放在该目录下
+        - 访问127.0.0.1/sql1/，点击“Setup/reset Database for labs”
+    - 安装xsser.me，测试XSS漏洞获取cookie并接收Web页面的平台，XSS可以做JS能做的所有事，包括但不限于窃取cookie、后台增删改文章、钓鱼、
+    利用XSS漏洞进行传播、修改网页代码、网站重定向、获取用户信息（如浏览器信息、IP地址）等
+        - 进入MySQL管理界面中phpMyAdmin界面，新建一个XSS平台的数据库，如xssplatform，设置其用户名和密码
+        - 修改config.php中的数据库连接字段，包括用户名、密码和数据库名，访问XSS平台的URL地址，将注册配置中的invite改为normal
+        - 进入MySQL管理中的phpMyAdmin，选择XSS平台的数据库，带入源码包中的xssplatform.sql文件，然后执行以下SQL，将数据库中原有的URL地址
+        修改为自己使用的URL，同时，也需要将authtest.php中的网址代码替换为自己的URL
+            - UPDATE ox_module SET code=REPLACE(code, 'http://xsser.me', 'http://yourdomain/xss')
+        - 访问XSS平台的URL，首先注册用户，然后再phpMyAdmin里选择oc_user，将注册用户的adminLevel改为1，再将config.php注册配置中的
+        normal改为invite（使用邀请码注册，即关闭开放注册的功能）
+        - 需要配置伪静态文件（.htaccess），在平台根目录下创建.htaccess文件
+        - 使用注册的账号登录XSS平台，创建项目
 
 
 
