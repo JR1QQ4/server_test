@@ -167,6 +167,62 @@ Microsoft Access、IBM DB2、SQLite、Firebird、Sybase和SAP MaxDB.SQLMap采用
     - 用Java开发的，运行时依赖JRE，下载后无需安装，直接双击BurpLoader.jar
     - Burp Suite代理工具是以拦截代理的方式，拦截所有通过代理的网络流量，拦截HTTP和HTTPS协议的流量
     - 设置：Burp Proxy默认本地代理端口为8080，Firefox浏览器设置HTTP代理为127.0.0.1，端口为8080
+    - Proxy
+        + Burp Proxy的拦截功能主要有Intercept选项卡中的Forward、Drop、Interception is on/off和Action构成
+            * Forward表示将拦截的数据包或修改后的数据包发送至服务器端
+            * Drop表示丢弃当前拦截的数据包
+            * Interception is on表示拦截功能，单机后变为Interception is off，表示关闭拦截功能
+            * 单击Action按钮，可以将数据包进一步发送到Spider、Scanner、Repeater、Intruder等功能组件做进一步的测试，同时也包含改变数据包请求方式及其body的编码等功能
+    - Spider，爬取到的内容将在Target中展示
+    - Decoder，编码解码及散列转换的工具
+        + 支持URL、HTML、Base64、ASCII、十六进制、八进制、二进制和GZIP的格式转换
+        + Hash散列支持SHA、SHA-224、SHA-256、SHA-384、SHA-512、MD2、MD5格式的转换
+    - Scanner
+        + 在默认设置下会扫描通过代理服务的请求，会在站点地图中显示请求的URL树，在其中一个URL上右击选择“Activily scan this host”，此时会弹出过滤设置，保持默认选项即可扫描整个域
+        + 也可以在Proxy下的HTTP history中，选择某个节点上的链接URL并右击选择Do an active scan进行扫描
+        + 对扫描结果选中需要进行分析的部分，将其发送到repeater模块中进行模拟提交分析和验证
+        + 但scanner扫描完成后，可以右击站点地图选项下的链接，依次选择“issues”->”Report issues“选项，然后导出漏洞报告
+        + 主要有主动扫描和被动扫描
+    - Repeater
+    - Comparer
+    - Sequencer
+- Nmap
+    + 一款开放源代码的网络探测和安全审核工具
+    + 它被设计用来快速扫描大型网络，包括主机探测与发现、开放的端口情况、操作系统与应用服务器指纹识别、WAF识别及常见安全漏洞，图形化界面是Zenmap，分布式架构为DNmap
+    - 扫描参数
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
