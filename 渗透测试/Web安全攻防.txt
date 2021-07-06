@@ -189,7 +189,65 @@ Microsoft Access、IBM DB2、SQLite、Firebird、Sybase和SAP MaxDB.SQLMap采用
 - Nmap
     + 一款开放源代码的网络探测和安全审核工具
     + 它被设计用来快速扫描大型网络，包括主机探测与发现、开放的端口情况、操作系统与应用服务器指纹识别、WAF识别及常见安全漏洞，图形化界面是Zenmap，分布式架构为DNmap
-    - 扫描参数
+    - 扫描参数（nmap --help）
+        + -iL：从文件中导入目标主机或目标网段
+        + -iR：随机选择目标主机
+        + --exclude：后面跟的主机或网段将不在扫描范围内
+        + --exclude：导入文件中的主机或网段将不在扫描范围中
+        + -sL：List Scan列表扫描，仅列举指定目标IP，不进行主机发现
+        + -sn：Ping Scan，只进行主机发现，不进行端口扫描
+        + -Pn：将所有指定的主机视作已开启，跳过主机发现的过程
+        + `-PS/PA/PU/PY [portlist]`：使用TCP SYN或SCTP INIT/ECHO方式来发现
+        + -PE/PP/PM：使用ICMP echo、timestamp、netmask请求包发现主机
+        + `-PO [portlist]`：使用IP协议包探测对方主机是否开启
+        + -n/-R：-n表示不进行DNS解析，-R表示总是进行DNS解析
+        + `--dns-servers <serv1 [,serv2,...]>`：指定DNS服务器
+        + --system-dns：指定使用系统的DNS服务器
+        + --traceroute：追踪每个路由节点
+        + -sS/sT/sA/sW/sM：指定使用TCP SYN/Connect()/ACK/Window/Maimon scans的方式对目标主机进行扫描
+        + -sU：指定使用UDP扫描的方式确定目标主机的UDP端口状况
+        + -sN/sF/sX：指定使用TCP Null/FIN/Xmas scans秘密扫描的方式协助探测对方的TCP端口状态
+        + `--scanflags <flags>`：定制TCP包的flags
+        + `-sl <zombie host [: probeport]>`：指定使用Idle scan的方式扫描目标主机（前提是需要找到合适的zombie host）
+        + -sY/sZ：使用SCTP INIT/COOKIE-ECHO扫描SCTP协议端口的开放情况
+        + -sO：使用IP protocol扫描确定目标机支持的协议类型
+        + `-b <FTP relay host>`：使用FTP bounce scan扫描方式
+        + `-p <port ranges>`：扫描指定的端口
+        + `-F`：Fast mode快速模式，仅扫描TOP 100的端口
+        + -r：不进行端口打乱的操作（如无该参数，Nmap会将要扫描的端口以随机顺序的方式进行扫描，让Nmap的扫描不易被对方防火墙检测到）
+        + `--top-ports <number>`：扫描开放概念最高的number个端口
+        + `--port-ratio <ratio>`：扫描指定频率以上的端口
+        + -sV：指定让Nmap进行版本侦测
+        + `--version-intensity <level>`：指定版本侦测的强度（0~9），默认为7，数值越高，探测出的服务越准确，但是运行时间会比较长
+        + --version-light：指定使用轻量级侦测方式（intensity 2）
+        + --version-all：尝试使用所有的probes进行侦测（intensity 9）
+        + --version-trace：显示出详细的版本侦测过程信息
+        + 扫描格式：Nmap + 扫描参数 + 目标地址或网段，如 nmap-T4-A-v ip
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
