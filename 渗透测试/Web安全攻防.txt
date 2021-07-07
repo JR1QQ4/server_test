@@ -223,6 +223,130 @@ Microsoft Access、IBM DB2、SQLite、Firebird、Sybase和SAP MaxDB.SQLMap采用
         + --version-all：尝试使用所有的probes进行侦测（intensity 9）
         + --version-trace：显示出详细的版本侦测过程信息
         + 扫描格式：Nmap + 扫描参数 + 目标地址或网段，如 nmap-T4-A-v ip
+    + 常用方法
+        + 1）扫描单个目标地址：nmap 192.168.0.100
+        + 2）扫描多个目标地址：nmap 192.168.0.100 192.168.0.105
+        + 3）扫描一个范围内的目标地址：nmap 192.168.0.100-110
+        + 4）扫描目标地址所在的某个网段：nmap 192.168.0.100/24
+        + 5）扫描主机列表targets.txt中的所有目标地址：nmap -iL C:\Users\username\Desktop\targets.txt
+        + 6）扫描除某一个目标地址之外的所有目标地址：nmap 192.168.0.100/24 -exclude 192.168.0.105
+        + 7）扫描除某一文件中的目标地址之外的目标地址：nmap 192.168.0.100/24 -excludefile C:\Users\username\Desktop\targets.txt
+        + 8）扫描某一目标地址的21、22、23、80端口：nmap 192.168.0.100 -p 21,22,23,80
+        + 9）对目标地址进行路由跟踪：nmap --traceroute 192.168.0.105
+        + 10）扫描目标地址所在C端的在线状况：nmap -sP 192.168.0.100/24
+        + 11）目标地址的操作系统指纹识别：nmap --O 192.168.0.105
+        + 12）目标地址提供的服务版本检测：nmap -sV 192.168.0.105
+        + 13）探测防火墙状态：nmap -sF -T4 192.168.0.105
+    + 状态识别（端口号、端口状态、服务器名称、服务器版本、协议）：open、filtered、closed、unfiltered、open/filtered、closed/filtered
+    + 脚本：/xx/nmap/scripts
+        * Auth：负责处理鉴权证书（绕过鉴权）的脚本
+        * Broadcast：在局域网内探查更多服务的开启状况，如DHCP/DNS/SQLServer等
+        * Brute：针对常见的应用提供暴力破解方式，如HTTP/SMTP等
+        * Default：使用-sC或-A选项扫描默认的脚本，提供基本的脚本描述能力
+        * Discovery：对网络进行更多的收集，如SMB枚举、SNMP查询等
+        * Dos：用于进行拒绝服务攻击
+        * Exploit：利用已知的漏洞入侵系统
+        * External：利用第三方的数据库或资源，例如，进行Whois解析
+        * Fuzzer：模糊测试脚本，发送异常的包到目标主机，探测出潜在漏洞
+        * Intrusive：入侵性的脚本，此类脚本可能引发对方的IDS/IPS的记录或屏蔽
+        * Malware：探测目标主机是否感染了病毒、开启后门等信息
+        * Safe：此类与Intrusive相反，属于安全性脚本
+        * Version：负责增强服务与版本扫描功能的脚本
+        * Vuln：负责检查目标主机是否有常见漏洞，如MS08-067
+    * 常用脚本 
+        - -sC/--script=default：使用默认的脚本进行扫描
+        - `--script=<Lua scripts>`：使用某个脚本进行扫描
+        - `--script-args=key1=value1,key2=value2...`：该参数用于传递脚本里的参数
+        - `--script-args-file=filename`：使用文件为脚本提供参数
+        - `--script-trace`：如果设置该参数，则显示脚本执行过程中发送与接收的数据
+        - `--script-upfatedb`：在Nmap的scripts目录里有一个script.db文件，小型数据库，保存着Nmap可用的脚本
+        - `--script-help`：调用参数后，Nmap会输出该脚本对应的脚本使用参数，以及详细的介绍信息
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
