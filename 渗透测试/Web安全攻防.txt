@@ -261,8 +261,16 @@ Microsoft Access、IBM DB2、SQLite、Firebird、Sybase和SAP MaxDB.SQLMap采用
         - `--script-trace`：如果设置该参数，则显示脚本执行过程中发送与接收的数据
         - `--script-upfatedb`：在Nmap的scripts目录里有一个script.db文件，小型数据库，保存着Nmap可用的脚本
         - `--script-help`：调用参数后，Nmap会输出该脚本对应的脚本使用参数，以及详细的介绍信息
-        
+	- 实例
+		- 1）鉴权扫描：nmap --script=auth 192.168.0.105
+		- 2）暴力破解攻击：nmap --script=brute 192.168.0.105
+		- 3）扫描常见的漏洞：nmap --script=vuln 192.168.0.105
+		- 4）应用服务扫描：nmap --script=realvnc-auth-bypass 192.168.0.105
+		- 5）探测局域网内更多服务开启的情况：nmap -n -p 445 --script=broadcast 192.168.0.105
+		- 6）Whois解析：nmap-script external baidu.com
 
+4、Web安全原理剖析
+- SQL注入
 
 
 
