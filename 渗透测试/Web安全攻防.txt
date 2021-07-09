@@ -271,7 +271,32 @@ Microsoft Access、IBM DB2、SQLite、Firebird、Sybase和SAP MaxDB.SQLMap采用
 
 4、Web安全原理剖析
 - SQL注入
-
+	- SQL注入漏洞的产生需要满足以下两个条件
+		- 参数用户可控：前端传给后端的参数内容是用户可以控制的
+		- 参数带入数据库查询：传入的参数拼接到SQL语句，且带入数据库查询
+	- MySQL默认在数据库中存放一个“information_schema”的数据库，记住三个表名SCHEMATA、TABLES和COLUMNS
+		- SCHEMATA表存储该用户创建的所有数据库的库名，SCHEMA_NAME字段表示记录的数据库库名
+		- TABLES表存储该用户创建的所有数据库的库名和表名，TABLE_SCHEMA和TABLE_NAME分别表示数据库库名和表名
+		- COLUMNS表存储该用户创建的所有数据库的库名、表名、字段名，TABLE_SCHEMA、TABLE_NAME和COLUMN_NAME表示数据库库名、表名和字段名
+		- Union注入攻击
+		- Boolean注入攻击
+		- 报错注入攻击
+		- 时间注入攻击
+		- 堆叠查询注入攻击
+		- 二次注入攻击
+		- 款直接注入攻击
+		- Cookie注入攻击
+		- base64注入攻击
+		- XFF注入攻击
+	- SQL注入绕过技术
+		- 大小写绕过注入
+		- 双写绕过注入
+		- 编码绕过注入
+		- 内联注释绕过注入
+	- SQL注入修复建议
+		- 过滤危险字符
+		- 使用预编译语句
+- XSS
 
 
 
