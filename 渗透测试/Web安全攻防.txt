@@ -379,13 +379,18 @@ Microsoft Access、IBM DB2、SQLite、Firebird、Sybase和SAP MaxDB.SQLMap采用
 		- 生僻函数
 		- 寻找网站源站IP
 
+5、Metasploit技术
+- Metasplot框架MSF
 
+6、PowerShell攻击指南
+- 攻击工具
+	- PowerSplit
+	- Nishang
+	- Empire
+	- PowerCat
 
-
-
-
-
-
+7、实例分析
+- 代码审计工具：RIPS、Fortify SCA、Seay、FindBugs
 
 
 
